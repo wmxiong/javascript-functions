@@ -1,5 +1,4 @@
-function seed() {}
-function seed() {
+function seed(a,b,c) {
   return Array.prototype.slice.call(arguments);
 }
 
@@ -8,10 +7,12 @@ function same([x, y], [j, k]) {
 }
 
 // The game state to search for `cell` is passed as the `this` value of the function.
-function contains(cell) {}
+function contains(cell) {
   return this.some((c) => same(c,cell));
-const printCell = (cell, state) => {};
+} 
+  const printCell = (cell, state) => {
   return contains.call(state, cell) ? "\u25A3" : "\u25A2";
+  };
 const corners = (state = []) => {
   if (state.length === 0 ) {
     return {
@@ -50,22 +51,23 @@ const getLivingNeighbors = (cell, state) => {
   return getNeighborsOf(cell).filter((n) => contains.bind(state)(n));
 };
 const willBeAlive = (cell, state) => {
-  const LivingNeighbors = getLivingNeighbors(cell, state);
+  const livingNeighbors = getLivingNeighbors(cell, state);
 
   return (
     livingNeighbors.length === 3 ||
-    (contains.call(state,cell) && livingNeighbors.length ===2)
+    (contains.call(state,cell) && livingNeighbors.length === 2)
   );
 };
 
 const calculateNext = (state) => {
   const { bottomLeft, topRight } = corners(state);
   let result = [];
-  for (let y = topRight[1] + 1; y >= bottomLeft[1] - 1; y--) {
-    for (let x = bottomLeft[0] - 1; x <= topRight[0] + 1; x++) {
+  for (let y = topRight[1] + 1; y>= bottomLeft[1] - 1; y--) {
+    for (let x = bottomLeft[0] -1; x <= topRight[0] + 1; x++) {
       result = result.concat(willBeAlive([x,y], state) ? [[x, y]] : []);
     }
   }
+  return result;
 };
 
 const iterate = (state, iterations) => {
@@ -77,7 +79,7 @@ const iterate = (state, iterations) => {
 };
 
 const main = (pattern, iterations) => {
-  const results = iterate(startPatterns[patterns], iterations);
+  const results = iterate(startPatterns[pattern], iterations);
   results.forEach(r => console.log(printCells(r)));
 };
 
@@ -133,4 +135,3 @@ const startPatterns = {
   exports.iterate = iterate;
   exports.main = main;
 
-  //this is a test
